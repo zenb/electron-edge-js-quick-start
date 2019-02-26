@@ -2,11 +2,20 @@
   "name": "electron-edge-js-quick-start",
   "version": "1.0.0",
   "description": "A minimal Electron application using `electron-edge-js` with .NET Core",
+  "author": {
+    "name": "agracio"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron --core .",
     "start:core": "electron --core .",
-    "start:standard": "electron --standard ."
+    "start:standard": "electron --standard .",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "npm run postinstall",
+    "build:prod": "npm run build -- -c production",
+    "electron:windows": "npm run build:prod && electron-builder build --windows",
+    "electron:linux": "npm run build:prod && electron-builder build --linux",
+    "electron:mac": "npm run build:prod && electron-builder build --mac"
   },
   "repository": "https://github.com/agracio/electron-edge-js-quick-start",
   "keywords": [
@@ -20,7 +29,55 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "electron-edge-js": "^8.3.6",
+    "electron-is-dev": "^1.0.1"
+  },
+  "devDependencies": {
     "electron": "^2.0.8",
-    "electron-edge-js": "^8.3.6"
+    "electron-builder": "^20.38.5"
+  },
+  "build": {
+    "productName": "electron-edge-js-quick-start",
+    "appId": "app.electron-edge-js.quick-start",
+    "directories": {
+      "output": "release/"
+    },
+    "files": [
+      "**/*",
+      "!README.md",
+      "!package.json",
+      "!package-lock.json",
+      "!src/",
+      "!LICENSE.md"
+    ],
+    "win": {
+      "target": "nsis",
+      "extraFiles": ["./src/QuickStart.Core/bin/Debug/netcoreapp2.0/**"]
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        "dmg"
+      ],
+      "extraDistFiles": [
+        "src/QuickStart.Core/bin/Debug/netcoreapp2.0/**"
+      ],
+      "asarUnpack": [
+        "src/QuickStart.Core/bin/Debug/netcoreapp2.0/**"
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": true,
+      "unicode": true,
+      "deleteAppDataOnUninstall": true,
+      "runAfterFinish": true,
+      "artifactName": "${productName} Setup ${version} ${os}.${ext}"
+    },
+    "dmg": {
+      "title": "${productName} Setup ${version}",
+      "artifactName": "${productName} Setup ${version} ${os}.${ext}"
+    }
   }
 }

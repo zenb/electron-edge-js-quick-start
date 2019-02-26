@@ -1,7 +1,10 @@
 const electron = require('electron');
 
-var version = process.argv[1].replace('--', '');
+var version = process.argv[1];
 
+if (version) {
+  version = version.replace('--', '');
+}
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
@@ -12,15 +15,18 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1052, height: 600});
+  mainWindow = new BrowserWindow({
+    width: 1052,
+    height: 600
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html?version=${version}`);
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -41,7 +47,7 @@ app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   //if (process.platform !== 'darwin') {
-    app.quit()
+  app.quit()
   //}
 });
 
